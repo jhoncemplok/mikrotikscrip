@@ -1,0 +1,820 @@
+# aug/05/2015 06:34:51 by RouterOS 6.20
+# software id = FD0D-6RRU
+#
+/interface bridge
+add mtu=1500 name=bridge1
+/interface ethernet
+set [ find default-name=ether1 ] comment=PE-TER
+set [ find default-name=ether2 ] comment=MTN
+
+
+/ip neighbor discovery
+set ether1 comment=PE-TER
+set ether2 comment=MTN
+
+/interface vlan
+add interface=ether2 l2mtu=1594 name="MTN VLAN" vlan-id=3926
+add interface=ether1 l2mtu=1594 name="MTN VLAN - DC" vlan-id=3926
+
+/interface wireless security-profiles
+set [ find default=yes ] supplicant-identity=MikroTik
+
+
+/ip firewall layer7-protocol
+add name=edonkey regexp="^[\C5\D4\E3-\E5].\?.\?.\?.\?([\01\02\05\14\15\16\18\
+    \19\1A\1B\1C !234568@ABCFGHIJKLMNOPQRSTUVWX[`\81\82\90\91\93\96\97\98\99\
+    \9A\9B\9C\9E\A0\A1\A2\A3\A4]|Y................\?[ -~]|\96....\$)"
+add name=goboogy regexp="<peerplat>|^get /getfilebyhash\\.cgi\\\?|^get /queue_\
+    register\\.cgi\\\?|^get /getupdowninfo\\.cgi\\\?"
+add name=soribada regexp="^GETMP3\r\
+    \nFilename|^\01.\?.\?.\?(Q:\\+|Q2:)|^\10[\14-\16]\10[\15-\17].\?.\?.\?.\?\
+    \$"
+add name=rdp regexp=rdpdr.*cliprdr.*rdpsnd
+add name=gnutella regexp="^(gnd[\01\02]\?.\?.\?\01|gnutella connect/[012]\\.[0\
+    -9]\r\
+    \n|get /uri-res/n2r\\\?urn:sha1:%7Cget /.*user-agent: (gtk-gnutella|bearsh\
+    are|mactella|gnucleus|gnotella|limewire|imesh)|get /.*content-type: applic\
+    ation/x-gnutella-packets|giv [0-9]*:[0-9a-f]*/|queue [0-9a-f]* [1-9][0-9]\
+    \?[0-9]\?\\.[1-9][0-9]\?[0-9]\?\\.[1-9][0-9]\?[0-9]\?\\.[1-9][0-9]\?[0-9]\
+    \?:[1-9][0-9]\?[0-9]\?[0-9]\?|gnutella.*content-type: application/x-gnutel\
+    la|...................\?lime)"
+add name=cvs regexp="^BEGIN (AUTH|VERIFICATION|GSSAPI) REQUEST\
+    \n"
+add name=nbns regexp="\01\10\01|\\)\10\01\01|0\10\01"
+add name=shoutcast regexp=\
+    "icy [1-5][0-9][0-9] [\t-\r -~]*(content-type:audio|icy-)"
+add name=dns regexp="^.\?.\?.\?.\?[\01\02].\?.\?.\?.\?.\?.\?[\01-\?][a-z0-9][\
+    \01-\?a-z]*[\02-\06][a-z][a-z][fglmoprstuvz]\?[aeop]\?(um)\?[\01-\10\1C][\
+    \01\03\04\FF]"
+add name=quake-halflife regexp="^\FF\FF\FF\FFget(info|challenge)"
+add name=poco regexp="^\80\94\
+    \n\01....\1F\9E"
+add name=ciscovpn regexp="^\01\F4\01\F4"
+add name=x11 regexp="^[lb].\?\0B"
+add name=xboxlive regexp="^X\80........\F3|^\06XN"
+add name=applejuice regexp="^ajprot\r\
+    \n"
+add name=zmaap regexp="^\1B\D7;H[\01\02]\01\?\01"
+add name=live365 regexp=membername.*session.*player
+add name=rlogin regexp="^[a-z][a-z0-9][a-z0-9]+/[1-9][0-9]\?[0-9]\?[0-9]\?00"
+add name=http regexp="http/(0\\.9|1\\.0|1\\.1) [1-5][0-9][0-9] [\t-\r -~]*(con\
+    nection:|content-type:|content-length:|date:)|post [\t-\r -~]* http/[01]\\\
+    .[019]"
+add name=sip regexp=\
+    "^(invite|register|cancel) sip[\t-\r -~]*sip/[0-2]\\.[0-9]"
+add name=pop3 regexp="^(\\+ok |-err )"
+add name=smb regexp="\FFsmb[r%]"
+add name=quake1 regexp="^\80\0C\01quake\03"
+add name=lpd regexp="^(\01[!-~]+|\02[!-~]+\
+    \n.[\01\02\03][\01-\
+    \n -~]*|[\03\04][!-~]+[\t-\r]+[a-z][\t-\r -~]*|\05[!-~]+[\t-\r]+([a-z][!-~\
+    ]*[\t-\r]+[1-9][0-9]\?[0-9]\?|root[\t-\r]+[!-~]+).*)\
+    \n\$"
+add name=mute regexp="^(Public|AES)Key: [0-9a-f]*\
+    \nEnd(Public|AES)Key\
+    \n\$"
+add name=ssh regexp="^ssh-[12]\\.[0-9]"
+add name=jabber regexp=\
+    "<stream:stream[\t-\r ][ -~]*[\t-\r ]xmlns=['\"]jabber"
+add name=bittorrent regexp="^(\13bittorrent protocol|azver\01\$|get/scrape\\\?\
+    info_hash=)|d1:ad2:id20:|\08'7P\\)[RP]"
+add name=ncp regexp="^(dmdt.*\01.*(\"\"|\11\11|uu)|tncp.*33)"
+add name=tls regexp="^(.\?.\?\16\03.*\16\03|.\?.\?\01\03\01\?.*\0B)"
+add name=directconnect regexp="^(\\\$mynick |\\\$lock |\\\$key )"
+add name=netbios regexp="\81.\?.\?.[A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-\
+    P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A\
+    -P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][A-P][\
+    A-P][A-P]"
+add name=tftp regexp="^(\01|\02)[ -~]*(netascii|octet|mail)"
+add name=subspace regexp="^\01....\11\10........\01\$"
+add name=hotline regexp="^....................TRTPHOTL\01\02"
+add name=doom3 regexp="^\FF\FFchallenge"
+add name=ftp regexp="^220[\t-\r -~]*ftp"
+add name=kugoo regexp="^1..\8E"
+add name=tsp regexp="^[\01-\13\16-\$]\01.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?[ -~]+"
+add name=battlefield1942 regexp="^\01\11\10\\|\F8\02\10@\06"
+add name=ssdp regexp="^notify[\t-\r ]\\*[\t-\r ]http/1\\.1[\t-\r -~]*ssdp:(ali\
+    ve|byebye)|^m-search[\t-\r ]\\*[\t-\r ]http/1\\.1[\t-\r -~]*ssdp:discover"
+add name=imap regexp="^(\\* ok|a[0-9]+ noop)"
+add name=ares regexp="^\03[]Z].\?.\?\05\$"
+add name=fasttrack regexp="^get (/.download/[ -~]*|/.supernode[ -~]|/.status[ \
+    -~]|/.network[ -~]*|/.files|/.hash=[0-9a-f]*/[ -~]*) http/1.1|user-agent: \
+    kazaa|x-kazaa(-username|-network|-ip|-supernodeip|-xferid|-xferuid|tag)|^g\
+    ive [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]\?[0-9]\?[0-9]\?"
+add name=qq regexp="^.\?\02.+\03\$"
+add name=100bao regexp="^\01\01\05\
+    \n"
+add name=aim regexp=\
+    "^(\\*[\01\02].*\03\0B|\\*\01.\?.\?.\?.\?\01)|flapon|toc_signon.*0x"
+add name=unknown regexp=.
+add name=msn-filetransfer regexp=\
+    "^(ver [ -~]*msnftp\r\
+    \nver msnftp\r\
+    \nusr|method msnmsgr:)"
+add name=yahoo regexp="^(ymsg|ypns|yhoo).\?.\?.\?.\?.\?.\?.\?[lwt].*\C0\80"
+add name=validcertssl regexp="^(.\?.\?\16\03.*\16\03|.\?.\?\01\03\01\?.*\0B).*\
+    (thawte|equifax secure|rsa data security, inc|verisign, inc|gte cybertrust\
+    \_root|entrust\\.net limited)"
+add name=ntp regexp="^([\13\1B#\D3\DB\E3]|[\14\1C\$].......\?.\?.\?.\?.\?.\?.\
+    \?.\?.\?[\C6-\FF])"
+add name=gnucleuslan regexp=\
+    "gnuclear connect/[\t-\r -~]*user-agent: gnucleus [\t-\r -~]*lan:"
+add name=vnc regexp="^rfb 00[1-9]\\.00[0-9]\
+    \n\$"
+add name=bgp regexp=\
+    "^\FF\FF\FF\FF\FF\FF\FF\FF\FF\FF\FF\FF\FF\FF\FF\FF..\?\01[\03\04]"
+add name=tesla regexp="\03\9A\89\"111\\.00 Beta |\E2<i\1E\1C\E9"
+add name=openft regexp="x-openftalias: [-)(0-9a-z ~.]"
+add name=h323 regexp=\
+    "^\03..\?\08...\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?\05"
+add name=finger regexp=\
+    "^[a-z][a-z0-9\\-_]+|login: [\t-\r -~]* name: [\t-\r -~]* Directory:"
+add name=ident regexp="^[1-9][0-9]\?[0-9]\?[0-9]\?[0-9]\?[\t-\r]*,[\t-\r]*[1-9\
+    ][0-9]\?[0-9]\?[0-9]\?[0-9]\?(\r\
+    \n|[\r\
+    \n])\?\$"
+add name=gkrellm regexp="^gkrellm [23].[0-9].[0-9]\
+    \n\$"
+add name=hddtemp regexp=\
+    "^\\|/dev/[a-z][a-z][a-z]\\|[0-9a-z]*\\|[0-9][0-9]\\|[cfk]\\|"
+add name=socks regexp="\05[\01-\08]*\05[\01-\08]\?.*\05[\01-\03][\01\03].*\05[\
+    \01-\08]\?[\01\03]"
+add name=biff regexp="^[a-z][a-z0-9]+@[1-9][0-9]+\$"
+add name=dhcp regexp="^[\01\02][\01- ]\06.*c\82sc"
+add name=smtp regexp="^220[\t-\r -~]* (e\?smtp|simple mail)"
+add name=ipp regexp=ipp://
+add name=msnmessenger regexp="ver [0-9]+ msnp[1-9][0-9]\? [\t-\r -~]*cvr0\r\
+    \n\$|usr 1 [!-~]+ [0-9. ]+\r\
+    \n\$|ans 1 [!-~]+ [0-9. ]+\r\
+    \n\$"
+add name=irc regexp="^(nick[\t-\r -~]*user[\t-\r -~]*:|user[\t-\r -~]*:[\02-\r\
+    \_-~]*nick[\t-\r -~]*\r\
+    \n)"
+add name=gopher regexp="^[\t-\r]*[1-9,+tgi][\t-\r -~]*\t[\t-\r -~]*\t[a-z0-9.]\
+    *\\.[a-z][a-z].\?.\?\t[1-9]"
+add name=telnet regexp="^\FF[\FB-\FE].\FF[\FB-\FE].\FF[\FB-\FE]"
+add name=snmp regexp="^\02\01\04.+([\A0-\A3]\02[\01-\04].\?.\?.\?.\?\02\01.\?\
+    \02\01.\?0|\A4\06.+@\04.\?.\?.\?.\?\02\01.\?\02\01.\?C)"
+add name=nntp regexp=\
+    "^(20[01][\t-\r -~]*AUTHINFO USER|20[01][\t-\r -~]*news)"
+add name=aimwebcontent regexp=user-agent:aim/
+add name=rtsp regexp="rtsp/1.0 200 ok"
+add name=skypeout regexp="^(\01.\?.\?.\?.\?.\?.\?.\?.\?\01|\02.\?.\?.\?.\?.\?.\
+    \?.\?.\?\02|\03.\?.\?.\?.\?.\?.\?.\?.\?\03|\04.\?.\?.\?.\?.\?.\?.\?.\?\04|\
+    \05.\?.\?.\?.\?.\?.\?.\?.\?\05|\06.\?.\?.\?.\?.\?.\?.\?.\?\06|\07.\?.\?.\?\
+    .\?.\?.\?.\?.\?\07|\08.\?.\?.\?.\?.\?.\?.\?.\?\08|\t.\?.\?.\?.\?.\?.\?.\?.\
+    \?\t|\
+    \n.\?.\?.\?.\?.\?.\?.\?.\?\
+    \n|\0B.\?.\?.\?.\?.\?.\?.\?.\?\0B|\0C.\?.\?.\?.\?.\?.\?.\?.\?\0C|\r.\?.\?.\
+    \?.\?.\?.\?.\?.\?\r|\0E.\?.\?.\?.\?.\?.\?.\?.\?\0E|\0F.\?.\?.\?.\?.\?.\?.\
+    \?.\?\0F|\10.\?.\?.\?.\?.\?.\?.\?.\?\10|\11.\?.\?.\?.\?.\?.\?.\?.\?\11|\12\
+    .\?.\?.\?.\?.\?.\?.\?.\?\12|\13.\?.\?.\?.\?.\?.\?.\?.\?\13|\14.\?.\?.\?.\?\
+    .\?.\?.\?.\?\14|\15.\?.\?.\?.\?.\?.\?.\?.\?\15|\16.\?.\?.\?.\?.\?.\?.\?.\?\
+    \16|\17.\?.\?.\?.\?.\?.\?.\?.\?\17|\18.\?.\?.\?.\?.\?.\?.\?.\?\18|\19.\?.\
+    \?.\?.\?.\?.\?.\?.\?\19|\1A.\?.\?.\?.\?.\?.\?.\?.\?\1A|\1B.\?.\?.\?.\?.\?.\
+    \?.\?.\?\1B|\1C.\?.\?.\?.\?.\?.\?.\?.\?\1C|\1D.\?.\?.\?.\?.\?.\?.\?.\?\1D|\
+    \1E.\?.\?.\?.\?.\?.\?.\?.\?\1E|\1F.\?.\?.\?.\?.\?.\?.\?.\?\1F| .\?.\?.\?.\
+    \?.\?.\?.\?.\? |!.\?.\?.\?.\?.\?.\?.\?.\?!|\".\?.\?.\?.\?.\?.\?.\?.\?\"|#.\
+    \?.\?.\?.\?.\?.\?.\?.\?#|\\\$.\?.\?.\?.\?.\?.\?.\?.\?\\\$|%.\?.\?.\?.\?.\?\
+    .\?.\?.\?%|&.\?.\?.\?.\?.\?.\?.\?.\?&|'.\?.\?.\?.\?.\?.\?.\?.\?'|\\(.\?.\?\
+    .\?.\?.\?.\?.\?.\?\\(|\\).\?.\?.\?.\?.\?.\?.\?.\?\\)|\\*.\?.\?.\?.\?.\?.\?\
+    .\?.\?\\*|\\+.\?.\?.\?.\?.\?.\?.\?.\?\\+|,.\?.\?.\?.\?.\?.\?.\?.\?,|-.\?.\
+    \?.\?.\?.\?.\?.\?.\?-|\\..\?.\?.\?.\?.\?.\?.\?.\?\\.|/.\?.\?.\?.\?.\?.\?.\
+    \?.\?/|0.\?.\?.\?.\?.\?.\?.\?.\?0|1.\?.\?.\?.\?.\?.\?.\?.\?1|2.\?.\?.\?.\?\
+    .\?.\?.\?.\?2|3.\?.\?.\?.\?.\?.\?.\?.\?3|4.\?.\?.\?.\?.\?.\?.\?.\?4|5.\?.\
+    \?.\?.\?.\?.\?.\?.\?5|6.\?.\?.\?.\?.\?.\?.\?.\?6|7.\?.\?.\?.\?.\?.\?.\?.\?\
+    7|8.\?.\?.\?.\?.\?.\?.\?.\?8|9.\?.\?.\?.\?.\?.\?.\?.\?9|:.\?.\?.\?.\?.\?.\
+    \?.\?.\?:|;.\?.\?.\?.\?.\?.\?.\?.\?;|<.\?.\?.\?.\?.\?.\?.\?.\?<|=.\?.\?.\?\
+    .\?.\?.\?.\?.\?=|>.\?.\?.\?.\?.\?.\?.\?.\?>|\\\?.\?.\?.\?.\?.\?.\?.\?.\?\\\
+    \?|@.\?.\?.\?.\?.\?.\?.\?.\?@|A.\?.\?.\?.\?.\?.\?.\?.\?A|B.\?.\?.\?.\?.\?.\
+    \?.\?.\?B|C.\?.\?.\?.\?.\?.\?.\?.\?C|D.\?.\?.\?.\?.\?.\?.\?.\?D|E.\?.\?.\?\
+    .\?.\?.\?.\?.\?E|F.\?.\?.\?.\?.\?.\?.\?.\?F|G.\?.\?.\?.\?.\?.\?.\?.\?G|H.\
+    \?.\?.\?.\?.\?.\?.\?.\?H|I.\?.\?.\?.\?.\?.\?.\?.\?I|J.\?.\?.\?.\?.\?.\?.\?\
+    .\?J|K.\?.\?.\?.\?.\?.\?.\?.\?K|L.\?.\?.\?.\?.\?.\?.\?.\?L|M.\?.\?.\?.\?.\
+    \?.\?.\?.\?M|N.\?.\?.\?.\?.\?.\?.\?.\?N|O.\?.\?.\?.\?.\?.\?.\?.\?O|P.\?.\?\
+    .\?.\?.\?.\?.\?.\?P|Q.\?.\?.\?.\?.\?.\?.\?.\?Q|R.\?.\?.\?.\?.\?.\?.\?.\?R|\
+    S.\?.\?.\?.\?.\?.\?.\?.\?S|T.\?.\?.\?.\?.\?.\?.\?.\?T|U.\?.\?.\?.\?.\?.\?.\
+    \?.\?U|V.\?.\?.\?.\?.\?.\?.\?.\?V|W.\?.\?.\?.\?.\?.\?.\?.\?W|X.\?.\?.\?.\?\
+    .\?.\?.\?.\?X|Y.\?.\?.\?.\?.\?.\?.\?.\?Y|Z.\?.\?.\?.\?.\?.\?.\?.\?Z|\\[.\?\
+    .\?.\?.\?.\?.\?.\?.\?\\[|\\].\?.\?.\?.\?.\?.\?.\?.\?\\]|\\].\?.\?.\?.\?.\?\
+    .\?.\?.\?\\]|\\^.\?.\?.\?.\?.\?.\?.\?.\?\\^|_.\?.\?.\?.\?.\?.\?.\?.\?_|`.\
+    \?.\?.\?.\?.\?.\?.\?.\?`|a.\?.\?.\?.\?.\?.\?.\?.\?a|b.\?.\?.\?.\?.\?.\?.\?\
+    .\?b|c.\?.\?.\?.\?.\?.\?.\?.\?c|d.\?.\?.\?.\?.\?.\?.\?.\?d|e.\?.\?.\?.\?.\
+    \?.\?.\?.\?e|f.\?.\?.\?.\?.\?.\?.\?.\?f|g.\?.\?.\?.\?.\?.\?.\?.\?g|h.\?.\?\
+    .\?.\?.\?.\?.\?.\?h|i.\?.\?.\?.\?.\?.\?.\?.\?i|j.\?.\?.\?.\?.\?.\?.\?.\?j|\
+    k.\?.\?.\?.\?.\?.\?.\?.\?k|l.\?.\?.\?.\?.\?.\?.\?.\?l|m.\?.\?.\?.\?.\?.\?.\
+    \?.\?m|n.\?.\?.\?.\?.\?.\?.\?.\?n|o.\?.\?.\?.\?.\?.\?.\?.\?o|p.\?.\?.\?.\?\
+    .\?.\?.\?.\?p|q.\?.\?.\?.\?.\?.\?.\?.\?q|r.\?.\?.\?.\?.\?.\?.\?.\?r|s.\?.\
+    \?.\?.\?.\?.\?.\?.\?s|t.\?.\?.\?.\?.\?.\?.\?.\?t|u.\?.\?.\?.\?.\?.\?.\?.\?\
+    u|v.\?.\?.\?.\?.\?.\?.\?.\?v|w.\?.\?.\?.\?.\?.\?.\?.\?w|x.\?.\?.\?.\?.\?.\
+    \?.\?.\?x|y.\?.\?.\?.\?.\?.\?.\?.\?y|z.\?.\?.\?.\?.\?.\?.\?.\?z|\\{.\?.\?.\
+    \?.\?.\?.\?.\?.\?\\{|\\|.\?.\?.\?.\?.\?.\?.\?.\?\\||\\}.\?.\?.\?.\?.\?.\?.\
+    \?.\?\\}|~.\?.\?.\?.\?.\?.\?.\?.\?~|\7F.\?.\?.\?.\?.\?.\?.\?.\?\7F|\80.\?.\
+    \?.\?.\?.\?.\?.\?.\?\80|\81.\?.\?.\?.\?.\?.\?.\?.\?\81|\82.\?.\?.\?.\?.\?.\
+    \?.\?.\?\82|\83.\?.\?.\?.\?.\?.\?.\?.\?\83|\84.\?.\?.\?.\?.\?.\?.\?.\?\84|\
+    \85.\?.\?.\?.\?.\?.\?.\?.\?\85|\86.\?.\?.\?.\?.\?.\?.\?.\?\86|\87.\?.\?.\?\
+    .\?.\?.\?.\?.\?\87|\88.\?.\?.\?.\?.\?.\?.\?.\?\88|\89.\?.\?.\?.\?.\?.\?.\?\
+    .\?\89|\8A.\?.\?.\?.\?.\?.\?.\?.\?\8A|\8B.\?.\?.\?.\?.\?.\?.\?.\?\8B|\8C.\
+    \?.\?.\?.\?.\?.\?.\?.\?\8C|\8D.\?.\?.\?.\?.\?.\?.\?.\?\8D|\8E.\?.\?.\?.\?.\
+    \?.\?.\?.\?\8E|\8F.\?.\?.\?.\?.\?.\?.\?.\?\8F|\90.\?.\?.\?.\?.\?.\?.\?.\?\
+    \90|\91.\?.\?.\?.\?.\?.\?.\?.\?\91|\92.\?.\?.\?.\?.\?.\?.\?.\?\92|\93.\?.\
+    \?.\?.\?.\?.\?.\?.\?\93|\94.\?.\?.\?.\?.\?.\?.\?.\?\94|\95.\?.\?.\?.\?.\?.\
+    \?.\?.\?\95|\96.\?.\?.\?.\?.\?.\?.\?.\?\96|\97.\?.\?.\?.\?.\?.\?.\?.\?\97|\
+    \98.\?.\?.\?.\?.\?.\?.\?.\?\98|\99.\?.\?.\?.\?.\?.\?.\?.\?\99|\9A.\?.\?.\?\
+    .\?.\?.\?.\?.\?\9A|\9B.\?.\?.\?.\?.\?.\?.\?.\?\9B|\9C.\?.\?.\?.\?.\?.\?.\?\
+    .\?\9C|\9D.\?.\?.\?.\?.\?.\?.\?.\?\9D|\9E.\?.\?.\?.\?.\?.\?.\?.\?\9E|\9F.\
+    \?.\?.\?.\?.\?.\?.\?.\?\9F|\A0.\?.\?.\?.\?.\?.\?.\?.\?\A0|\A1.\?.\?.\?.\?.\
+    \?.\?.\?.\?\A1|\A2.\?.\?.\?.\?.\?.\?.\?.\?\A2|\A3.\?.\?.\?.\?.\?.\?.\?.\?\
+    \A3|\A4.\?.\?.\?.\?.\?.\?.\?.\?\A4|\A5.\?.\?.\?.\?.\?.\?.\?.\?\A5|\A6.\?.\
+    \?.\?.\?.\?.\?.\?.\?\A6|\A7.\?.\?.\?.\?.\?.\?.\?.\?\A7|\A8.\?.\?.\?.\?.\?.\
+    \?.\?.\?\A8|\A9.\?.\?.\?.\?.\?.\?.\?.\?\A9|\AA.\?.\?.\?.\?.\?.\?.\?.\?\AA|\
+    \AB.\?.\?.\?.\?.\?.\?.\?.\?\AB|\AC.\?.\?.\?.\?.\?.\?.\?.\?\AC|\AD.\?.\?.\?\
+    .\?.\?.\?.\?.\?\AD|\AE.\?.\?.\?.\?.\?.\?.\?.\?\AE|\AF.\?.\?.\?.\?.\?.\?.\?\
+    .\?\AF|\B0.\?.\?.\?.\?.\?.\?.\?.\?\B0|\B1.\?.\?.\?.\?.\?.\?.\?.\?\B1|\B2.\
+    \?.\?.\?.\?.\?.\?.\?.\?\B2|\B3.\?.\?.\?.\?.\?.\?.\?.\?\B3|\B4.\?.\?.\?.\?.\
+    \?.\?.\?.\?\B4|\B5.\?.\?.\?.\?.\?.\?.\?.\?\B5|\B6.\?.\?.\?.\?.\?.\?.\?.\?\
+    \B6|\B7.\?.\?.\?.\?.\?.\?.\?.\?\B7|\B8.\?.\?.\?.\?.\?.\?.\?.\?\B8|\B9.\?.\
+    \?.\?.\?.\?.\?.\?.\?\B9|\BA.\?.\?.\?.\?.\?.\?.\?.\?\BA|\BB.\?.\?.\?.\?.\?.\
+    \?.\?.\?\BB|\BC.\?.\?.\?.\?.\?.\?.\?.\?\BC|\BD.\?.\?.\?.\?.\?.\?.\?.\?\BD|\
+    \BE.\?.\?.\?.\?.\?.\?.\?.\?\BE|\BF.\?.\?.\?.\?.\?.\?.\?.\?\BF|\C0.\?.\?.\?\
+    .\?.\?.\?.\?.\?\C0|\C1.\?.\?.\?.\?.\?.\?.\?.\?\C1|\C2.\?.\?.\?.\?.\?.\?.\?\
+    .\?\C2|\C3.\?.\?.\?.\?.\?.\?.\?.\?\C3|\C4.\?.\?.\?.\?.\?.\?.\?.\?\C4|\C5.\
+    \?.\?.\?.\?.\?.\?.\?.\?\C5|\C6.\?.\?.\?.\?.\?.\?.\?.\?\C6|\C7.\?.\?.\?.\?.\
+    \?.\?.\?.\?\C7|\C8.\?.\?.\?.\?.\?.\?.\?.\?\C8|\C9.\?.\?.\?.\?.\?.\?.\?.\?\
+    \C9|\CA.\?.\?.\?.\?.\?.\?.\?.\?\CA|\CB.\?.\?.\?.\?.\?.\?.\?.\?\CB|\CC.\?.\
+    \?.\?.\?.\?.\?.\?.\?\CC|\CD.\?.\?.\?.\?.\?.\?.\?.\?\CD|\CE.\?.\?.\?.\?.\?.\
+    \?.\?.\?\CE|\CF.\?.\?.\?.\?.\?.\?.\?.\?\CF|\D0.\?.\?.\?.\?.\?.\?.\?.\?\D0|\
+    \D1.\?.\?.\?.\?.\?.\?.\?.\?\D1|\D2.\?.\?.\?.\?.\?.\?.\?.\?\D2|\D3.\?.\?.\?\
+    .\?.\?.\?.\?.\?\D3|\D4.\?.\?.\?.\?.\?.\?.\?.\?\D4|\D5.\?.\?.\?.\?.\?.\?.\?\
+    .\?\D5|\D6.\?.\?.\?.\?.\?.\?.\?.\?\D6|\D7.\?.\?.\?.\?.\?.\?.\?.\?\D7|\D8.\
+    \?.\?.\?.\?.\?.\?.\?.\?\D8|\D9.\?.\?.\?.\?.\?.\?.\?.\?\D9|\DA.\?.\?.\?.\?.\
+    \?.\?.\?.\?\DA|\DB.\?.\?.\?.\?.\?.\?.\?.\?\DB|\DC.\?.\?.\?.\?.\?.\?.\?.\?\
+    \DC|\DD.\?.\?.\?.\?.\?.\?.\?.\?\DD|\DE.\?.\?.\?.\?.\?.\?.\?.\?\DE|\DF.\?.\
+    \?.\?.\?.\?.\?.\?.\?\DF|\E0.\?.\?.\?.\?.\?.\?.\?.\?\E0|\E1.\?.\?.\?.\?.\?.\
+    \?.\?.\?\E1|\E2.\?.\?.\?.\?.\?.\?.\?.\?\E2|\E3.\?.\?.\?.\?.\?.\?.\?.\?\E3|\
+    \E4.\?.\?.\?.\?.\?.\?.\?.\?\E4|\E5.\?.\?.\?.\?.\?.\?.\?.\?\E5|\E6.\?.\?.\?\
+    .\?.\?.\?.\?.\?\E6|\E7.\?.\?.\?.\?.\?.\?.\?.\?\E7|\E8.\?.\?.\?.\?.\?.\?.\?\
+    .\?\E8|\E9.\?.\?.\?.\?.\?.\?.\?.\?\E9|\EA.\?.\?.\?.\?.\?.\?.\?.\?\EA|\EB.\
+    \?.\?.\?.\?.\?.\?.\?.\?\EB|\EC.\?.\?.\?.\?.\?.\?.\?.\?\EC|\ED.\?.\?.\?.\?.\
+    \?.\?.\?.\?\ED|\EE.\?.\?.\?.\?.\?.\?.\?.\?\EE|\EF.\?.\?.\?.\?.\?.\?.\?.\?\
+    \EF|\F0.\?.\?.\?.\?.\?.\?.\?.\?\F0|\F1.\?.\?.\?.\?.\?.\?.\?.\?\F1|\F2.\?.\
+    \?.\?.\?.\?.\?.\?.\?\F2|\F3.\?.\?.\?.\?.\?.\?.\?.\?\F3|\F4.\?.\?.\?.\?.\?.\
+    \?.\?.\?\F4|\F5.\?.\?.\?.\?.\?.\?.\?.\?\F5|\F6.\?.\?.\?.\?.\?.\?.\?.\?\F6|\
+    \F7.\?.\?.\?.\?.\?.\?.\?.\?\F7|\F8.\?.\?.\?.\?.\?.\?.\?.\?\F8|\F9.\?.\?.\?\
+    .\?.\?.\?.\?.\?\F9|\FA.\?.\?.\?.\?.\?.\?.\?.\?\FA|\FB.\?.\?.\?.\?.\?.\?.\?\
+    .\?\FB|\FC.\?.\?.\?.\?.\?.\?.\?.\?\FC|\FD.\?.\?.\?.\?.\?.\?.\?.\?\FD|\FE.\
+    \?.\?.\?.\?.\?.\?.\?.\?\FE|\FF.\?.\?.\?.\?.\?.\?.\?.\?\FF)"
+add name=skypetoskype regexp="^..\02............."
+add name=counterstrike-source regexp="^\FF\FF\FF\FF.*cstrikeCounter-Strike"
+add name=halflife2-deathmatch regexp="^\FF\FF\FF\FF.*hl2mpDeathmatch"
+add name=freenet regexp="^\01[\08\t][\03\04]"
+add name=battlefield2 regexp="^(\11 \01...\?\11|\FE\FD.\?.\?.\?.\?.\?.\?(\14\
+    \01\06|\FF\FF\FF))|[]\01].\?battlefield2"
+add name=napster regexp="^(.[\02\06][!-~]+ [!-~]+ [0-9][0-9]\?[0-9]\?[0-9]\?[0\
+    -9]\? \"[\t-\r -~]+\" ([0-9]|10)|1(send|get)[!-~]+ \"[\t-\r -~]+\")"
+add name=soulseek regexp="^(\05..\?|.\01.[ -~]+\01F..\?.\?.\?.\?.\?.\?.\?)\$"
+add name=xunlei regexp="^[()]...\?.\?.\?(reg|get|query)"
+add name=ssl regexp="^(.\?.\?\16\03.*\16\03|.\?.\?\01\03\01\?.*\0B)"
+add name=citrix regexp="2&\85\92X"
+add name=whois regexp="^[ !-~]+\r\
+    \n\$"
+add name=dayofdefeat-source regexp="^\FF\FF\FF\FF.*dodDay of Defeat"
+add name=teamspeak regexp="^\F4\BE\03.*teamspeak"
+add name=worldofwarcraft regexp="^\06\EC\01"
+add name=ventrilo regexp="^..\?v\\\$\CF"
+add name=http-rtsp regexp="^(get[\t-\r -~]* Accept: application/x-rtsp-tunnell\
+    ed|http/(0\\.9|1\\.0|1\\.1) [1-5][0-9][0-9] [\t-\r -~]*a=control:rtsp://)"
+add name=thecircle regexp=\
+    "^t\03ni.\?[\01-\06]\?t[\01-\05]s[\
+    \n\0B](glob|who are you\$|query data)"
+add name=uucp regexp="^\10here="
+add name=pcanywhere regexp="^(nq|st)\$"
+add name=subversion regexp="^\\( success \\( 1 2 \\("
+add name=imesh regexp="^(post[\t-\r -~]*<PasswordHash>........................\
+    ........</PasswordHash><ClientVer>|4\80\?\r\?\FC\FF\04|get[\t-\r -~]*Host:\
+    \_imsh\\.download-prod\\.musicnet\\.com|\02(\01|\02)\83.\?.\?.\?.\?.\?.\?.\
+    \?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?.\?\02(\01|\
+    \02)\83)"
+add name=cimd regexp="\02[0-4][0-9]:[0-9]+.*\03\$"
+add name=mohaa regexp="^\FF\FF\FF\FFgetstatus\
+    \n"
+add name=stun regexp="^[\01\02]................\?\$"
+add name=tor regexp=TOR1.*<identity>
+add name=radmin regexp="^\01\01(\08\08|\1B\1B)\$"
+add name=unset regexp=.
+add name=chikka regexp="^CTPv1.[123] Kamusta.*\r\
+    \n\$"
+add name=replaytv-ivs regexp="^(get /ivs-IVSGetFileChunk|http/(0\\.9|1\\.0|1\\\
+    .1) [1-5][0-9][0-9] [\t-\r -~]*#####REPLAY_CHUNK_START#####)"
+add name=armagetron regexp=YCLC_E|CYEL
+add name=streaming regexp=videoplayback|video
+add name=youtube regexp="^.+(facebook.com|youtube.com).*\$"
+
+
+/queue simple
+add dst=10.16.0.0/15 name="Not marked" packet-marks=no-mark target=\
+    10.16.0.0/15
+
+
+/queue tree
+add limit-at=128k max-limit=256k name=INBOUND parent=global priority=1 queue=\
+    default
+add name=100bao_p2p_in packet-mark=100bao_p2p_in parent=INBOUND queue=default
+add name=aim_mesanger_in packet-mark=aim_mesanger_in parent=INBOUND priority=\
+    6 queue=default
+add name=aim_mesenger_web_in packet-mark=aim_mesenger_web_in parent=INBOUND \
+    priority=6 queue=default
+add name=applejuice_in packet-mark=applejuice_in parent=INBOUND priority=7 \
+    queue=default
+add name=ares_p2p_in packet-mark=ares_p2p_in parent=INBOUND priority=7 queue=\
+    default
+add name=http_in packet-mark=http_in parent=INBOUND priority=2 queue=default
+add name=bittorent_in packet-mark=bittorent_in parent=INBOUND priority=7 \
+    queue=default
+add name=dhcp_in packet-mark=dhcp_in parent=INBOUND priority=2 queue=default
+add name=DC_p2p_in packet-mark=DC_p2p_in parent=INBOUND priority=7 queue=\
+    default
+add name=DNS_in packet-mark=DNS_in parent=INBOUND priority=1 queue=default
+add name=edonkey_p2p_in packet-mark=edonkey_p2p_in parent=INBOUND priority=7 \
+    queue=default
+add name=fasttrack_p2p_in packet-mark=fasttrack_p2p_in parent=INBOUND \
+    priority=7 queue=default
+add name=ftp_in packet-mark=ftp_in parent=INBOUND priority=5 queue=default
+add name=gnu_p2p_in packet-mark=gnu_p2p_in parent=INBOUND priority=7 queue=\
+    default
+add name=gnutella_p2p_in packet-mark=gnutella_p2p_in parent=INBOUND priority=\
+    7 queue=default
+add name=gobogy_p2p_in packet-mark=gobogy_p2p_in parent=INBOUND priority=7 \
+    queue=default
+add name=h323_voiceoverip_in packet-mark=h323_voiceoverip_in parent=INBOUND \
+    priority=4 queue=default
+add name=httprtsp_in packet-mark=httprtsp_in parent=INBOUND priority=5 queue=\
+    default
+add name=ident_in packet-mark=ident_in parent=INBOUND priority=2 queue=\
+    default
+add name=imap_in packet-mark=imap_in parent=INBOUND priority=2 queue=default
+add name=imesh_p2p_in packet-mark=imesh_p2p_in parent=INBOUND priority=7 \
+    queue=default
+add name=irc_in packet-mark=irc_in parent=INBOUND priority=5 queue=default
+add name=msnfile_in packet-mark=msnfile_in parent=INBOUND priority=6 queue=\
+    default
+add name=mute_p2p_in packet-mark=mute_p2p_in parent=INBOUND priority=7 queue=\
+    default
+add name=napster_in packet-mark=napster_in parent=INBOUND priority=7 queue=\
+    default
+add name=netbios_in packet-mark=netbios_in parent=INBOUND priority=2 queue=\
+    default
+add name=nntp_in packet-mark=nntp_in parent=INBOUND priority=2 queue=default
+add name=radmin_in packet-mark=radmin_in parent=INBOUND priority=4 queue=\
+    default
+add name=ntp_in packet-mark=ntp_in parent=INBOUND priority=2 queue=default
+add name=rdp_in packet-mark=rdp_in parent=INBOUND priority=4 queue=default
+add name=rtsp_in packet-mark=rtsp_in parent=INBOUND priority=6 queue=default
+add name=sip_in packet-mark=sip_in parent=INBOUND priority=4 queue=default
+add name=skypeout_in packet-mark=skypeout_in parent=INBOUND priority=5 queue=\
+    default
+add name=skype2skype_in packet-mark=skype2skype_in parent=INBOUND priority=5 \
+    queue=default
+add name=pop3_in packet-mark=pop3_in parent=INBOUND priority=5 queue=default
+add name=smtp_in packet-mark=smtp_in parent=INBOUND priority=2 queue=default
+add name=snmp_in packet-mark=snmp_in parent=INBOUND priority=2 queue=default
+add name=soulsek_in packet-mark=soulsek_in parent=INBOUND priority=7 queue=\
+    default
+add name=ssh_in packet-mark=ssh_in parent=INBOUND priority=3 queue=default
+add name=ssl_in packet-mark=ssl_in parent=INBOUND priority=2 queue=default
+add name=vnc_in packet-mark=vnc_in parent=INBOUND priority=4 queue=default
+add name=teamspeak_in packet-mark=teamspeak_in parent=INBOUND priority=4 \
+    queue=default
+add limit-at=128k max-limit=256k name=OUTBOUND parent=global priority=1 \
+    queue=default
+add name=100bao_p2p_out packet-mark=100bao_p2p_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=aim_mesanger_out packet-mark=aim_mesanger_out parent=OUTBOUND \
+    priority=6 queue=default
+add name=aim_mesenger_web_out packet-mark=aim_mesenger_web_out parent=\
+    OUTBOUND priority=7 queue=default
+add name=ares_p2p_out packet-mark=ares_p2p_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=bgp_routing_out packet-mark=bgp_routing_out parent=OUTBOUND \
+    priority=2 queue=default
+add name=bittorent_out packet-mark=bittorent_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=dhcp_out packet-mark=dhcp_out parent=OUTBOUND priority=2 queue=\
+    default
+add name=DC_p2p_out packet-mark=DC_p2p_out parent=OUTBOUND priority=7 queue=\
+    default
+add name=DNS_out packet-mark=DNS_out parent=OUTBOUND priority=1 queue=default
+add name=edonkey_p2p_out packet-mark=edonkey_p2p_out parent=OUTBOUND \
+    priority=7 queue=default
+add name=fasttrack_p2p_out packet-mark=fasttrack_p2p_out parent=OUTBOUND \
+    priority=7 queue=default
+add name=ftp_out packet-mark=ftp_out parent=OUTBOUND priority=5 queue=default
+add name=gnu_p2p_out packet-mark=gnu_p2p_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=gnutella_p2p_out packet-mark=gnutella_p2p_out parent=OUTBOUND \
+    priority=7 queue=default
+add name=gobogy_p2p_out packet-mark=gobogy_p2p_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=h323_voiceoverip_out packet-mark=h323_voiceoverip_out parent=\
+    OUTBOUND priority=4 queue=default
+add name=httprtsp_out packet-mark=httprtsp_out parent=OUTBOUND priority=5 \
+    queue=default
+add name=http_out packet-mark=http_out parent=OUTBOUND priority=3 queue=\
+    default
+add name=ident_out packet-mark=ident_out parent=OUTBOUND priority=2 queue=\
+    default
+add name=imap_out packet-mark=imap_out parent=OUTBOUND priority=2 queue=\
+    default
+add name=imesh_p2p_out packet-mark=imesh_p2p_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=irc_out packet-mark=irc_out parent=OUTBOUND priority=4 queue=default
+add name=koogo_out packet-mark=koogo_out parent=OUTBOUND priority=7 queue=\
+    default
+add name=msnfile_out packet-mark=msnfile_out parent=OUTBOUND priority=6 \
+    queue=default
+add name=msn_out packet-mark=msn_out parent=OUTBOUND priority=5 queue=default
+add name=mute_p2p_out packet-mark=mute_p2p_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=napster_out packet-mark=napster_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=netbios_out packet-mark=netbios_out parent=OUTBOUND priority=2 \
+    queue=default
+add name=nntp_out packet-mark=nntp_out parent=OUTBOUND priority=2 queue=\
+    default
+add name=ntp_out packet-mark=ntp_out parent=OUTBOUND priority=2 queue=default
+add name=radmin_out packet-mark=radmin_out parent=OUTBOUND priority=4 queue=\
+    default
+add name=rdp_out packet-mark=rdp_out parent=OUTBOUND priority=4 queue=default
+add name=rtsp_out packet-mark=rtsp_out parent=OUTBOUND priority=5 queue=\
+    default
+add name=sip_out packet-mark=sip_out parent=OUTBOUND priority=4 queue=default
+add name=skypeout_out packet-mark=skypeout_out parent=OUTBOUND priority=5 \
+    queue=default
+add name=skype2skype_out packet-mark=skype2skype_out parent=OUTBOUND \
+    priority=5 queue=default
+add name=pop3_out packet-mark=pop3_out parent=OUTBOUND priority=4 queue=\
+    default
+add name=smtp_out packet-mark=smtp_out parent=OUTBOUND priority=2 queue=\
+    default
+add name=snmp_out packet-mark=snmp_out parent=OUTBOUND priority=2 queue=\
+    default
+add name=soulsek_out packet-mark=soulsek_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=ssh_out packet-mark=ssh_out parent=OUTBOUND priority=3 queue=default
+add name=ssl_out packet-mark=ssl_out parent=OUTBOUND priority=3 queue=default
+add name=vnc_out packet-mark=vnc_out parent=OUTBOUND priority=5 queue=default
+add name=teamspeak_out packet-mark=teamspeak_out parent=OUTBOUND priority=5 \
+    queue=default
+add name=applejuice_out packet-mark=applejuice_out parent=OUTBOUND priority=7 \
+    queue=default
+add name=msn_in packet-mark=msn_in parent=INBOUND priority=5 queue=default
+add name=remaining_in packet-mark=remaining_in parent=INBOUND priority=6
+add name=remaining_out packet-mark=remaining_out parent=OUTBOUND priority=6
+add name=streaming packet-mark=youtube parent=INBOUND priority=7 queue=\
+    default
+add limit-at=24k max-limit=24k name=youtube packet-mark=youtube_out parent=\
+    OUTBOUND priority=7 queue=default
+
+
+/system logging action
+set 2 remember=yes
+/interface bridge port
+add bridge=bridge1 comment=PE-TER interface="MTN VLAN - DC"
+add bridge=bridge1 comment=MTN interface="MTN VLAN"
+
+/interface bridge settings
+set use-ip-firewall=yes
+/ip address
+add address=10.12.5.2/30 interface=bridge1 network=10.12.5.0
+/ip dhcp-client
+add default-route-distance=0 dhcp-options=hostname,clientid interface=bridge1
+
+
+/ip firewall filter
+add action=drop chain=forward comment="Block Bit-Torrent Traffic" p2p=\
+    bit-torrent src-address=0.0.0.0/0
+add action=drop chain=forward comment="Block Youtube HTTP" content=\
+    youtube.com dst-port=80 protocol=tcp src-address=0.0.0.0/0
+add action=drop chain=forward comment="Block Youtube HTTPS" content=\
+    youtube.com dst-port=443 protocol=tcp src-address=0.0.0.0/0
+add action=drop chain=forward comment="Block Youtube Layer7 Pacet" \
+    layer7-protocol=youtube src-address=0.0.0.0/0
+add action=drop chain=forward comment="Drop http after hours" \
+    layer7-protocol=http
+add action=drop chain=forward comment="Drop Streaming Afterhours" \
+    layer7-protocol=streaming
+add action=drop chain=forward comment="Drop SSL afterhours" layer7-protocol=\
+    ssl
+add action=drop chain=forward comment=\
+    "Drop all UDP except port 53 After Hours" dst-port=!53 protocol=udp
+
+
+/ip firewall mangle
+add action=mark-packet chain=postrouting comment="PPTP-OUT PE-TER" \
+    dst-address=10.16.0.0/15 new-packet-mark=pptp-in passthrough=no protocol=\
+    tcp src-port=1723
+add action=mark-packet chain=prerouting comment="PPTP to PE-TER" dst-port=\
+    1723 new-packet-mark=pptp_in passthrough=no protocol=tcp src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=prerouting comment=djlaptop disabled=yes \
+    new-packet-mark=djtest passthrough=no src-address=10.16.9.175
+add action=mark-packet chain=postrouting disabled=yes dst-address=10.16.9.175 \
+    new-packet-mark=djtest-out passthrough=no
+add action=mark-packet chain=prerouting comment=100bao_p2p layer7-protocol=\
+    100bao new-packet-mark=100bao_p2p_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=100bao new-packet-mark=100bao_p2p_out
+add action=mark-packet chain=prerouting comment="aim mesenger" \
+    layer7-protocol=aim new-packet-mark=aim_mesanger_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=aim new-packet-mark=aim_mesanger_out
+add action=mark-packet chain=prerouting comment=aim_messenger_web \
+    layer7-protocol=aimwebcontent new-packet-mark=aim_mesenger_web_in \
+    src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=aimwebcontent new-packet-mark=aim_mesenger_web_out
+add action=mark-packet chain=prerouting comment=applejuice_p2p \
+    layer7-protocol=applejuice new-packet-mark=applejuice_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=applejuice new-packet-mark=applejuice_out
+add action=mark-packet chain=prerouting comment=ares_p2p layer7-protocol=ares \
+    new-packet-mark=ares_p2p_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=ares new-packet-mark=ares_p2p_out
+add action=mark-packet chain=prerouting comment=bgp_routing layer7-protocol=\
+    bgp new-packet-mark=bgp_routing_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=bgp new-packet-mark=bgp_routing_out
+add action=mark-packet chain=prerouting comment=bittorent_p2p \
+    layer7-protocol=bittorrent new-packet-mark=bittorent_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=bittorrent new-packet-mark=bittorent_out
+add action=mark-packet chain=prerouting comment=dhcp layer7-protocol=dhcp \
+    new-packet-mark=dhcp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=dhcp new-packet-mark=dhcp_out
+add action=mark-packet chain=prerouting comment=\
+    "Direct Connect - P2P filesharing " layer7-protocol=directconnect \
+    new-packet-mark=DC_p2p_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=directconnect new-packet-mark=DC_p2p_out
+add action=mark-packet chain=prerouting comment="DNS - Domain Name System " \
+    layer7-protocol=dns new-packet-mark=DNS_in src-address=10.16.0.0/15
+add action=mark-packet chain=prerouting comment="pptp to PE-TER" \
+    layer7-protocol=dns new-packet-mark=DNS_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=dns new-packet-mark=DNS_out
+add action=mark-packet chain=prerouting comment=\
+    "eDonkey2000 - P2P filesharing " layer7-protocol=edonkey new-packet-mark=\
+    edonkey_p2p_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=edonkey new-packet-mark=edonkey_p2p_out
+add action=mark-packet chain=prerouting comment=\
+    "FastTrack - P2P filesharing (Kazaa, Morpheus, iMesh, Grokster, etc)" \
+    layer7-protocol=fasttrack new-packet-mark=fasttrack_p2p_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=prerouting comment=\
+    "FTP - File Transfer Protocol " layer7-protocol=ftp new-packet-mark=\
+    ftp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=fasttrack new-packet-mark=fasttrack_p2p_out
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=ftp new-packet-mark=ftp_out
+add action=mark-packet chain=prerouting comment="GnucleusLAN - LAN-only P2P " \
+    layer7-protocol=gnucleuslan new-packet-mark=gnu_p2p_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=gnucleuslan new-packet-mark=gnu_p2p_out
+add action=mark-packet chain=prerouting comment="Gnutella - P2P filesharing" \
+    layer7-protocol=gnutella new-packet-mark=gnutella_p2p_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=gnutella new-packet-mark=gnutella_p2p_out
+add action=mark-packet chain=prerouting comment=\
+    "GoBoogy - a Korean P2P protocol" layer7-protocol=goboogy \
+    new-packet-mark=gobogy_p2p_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=goboogy new-packet-mark=gobogy_p2p_out
+add action=mark-packet chain=prerouting comment="H.323 - Voice over IP" \
+    layer7-protocol=h323 new-packet-mark=h323_voiceoverip_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=h323 new-packet-mark=h323_voiceoverip_out
+add action=mark-packet chain=prerouting comment="RTSP tunneled within HTTP" \
+    layer7-protocol=http-rtsp new-packet-mark=httprtsp_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=http-rtsp new-packet-mark=httprtsp_out
+add action=mark-connection chain=prerouting comment="Youtube_ Client" \
+    layer7-protocol=streaming new-connection-mark=youtube src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=prerouting comment=\
+    "www HyperText Transfer Protocol " layer7-protocol=http new-packet-mark=\
+    http_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=http new-packet-mark=http_out
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=ident new-packet-mark=ident_out
+add action=mark-packet chain=prerouting comment=\
+    "IMAP - Internet Message Access Protocol (A common e-mail protocol)" \
+    layer7-protocol=imap new-packet-mark=imap_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=imap new-packet-mark=imap_out
+add action=mark-packet chain=prerouting comment=\
+    "Ident - Identification Protocol - RFC 1413" layer7-protocol=ident \
+    new-packet-mark=ident_in src-address=10.16.0.0/15
+add action=mark-packet chain=prerouting comment=\
+    "iMesh - the native protocol of iMesh, a P2P application " \
+    layer7-protocol=imesh new-packet-mark=imesh_p2p_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=imesh new-packet-mark=imesh_p2p_out
+add action=mark-packet chain=prerouting comment="IRC - Internet Relay Chat" \
+    layer7-protocol=irc new-packet-mark=irc_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=irc new-packet-mark=irc_out
+add action=mark-packet chain=prerouting comment=\
+    "KuGoo - a Chinese P2P program " layer7-protocol=kugoo new-packet-mark=\
+    koogo_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=kugoo new-packet-mark=koogo_out
+add action=mark-packet chain=prerouting comment=\
+    "MSN (Micosoft Network) Messenger file transfers " layer7-protocol=\
+    msn-filetransfer new-packet-mark=msnfile_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=msn-filetransfer new-packet-mark=msnfile_out
+add action=mark-packet chain=prerouting comment="MSN Messenger " \
+    layer7-protocol=msnmessenger new-packet-mark=msn_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=msnmessenger new-packet-mark=msn_out
+add action=mark-packet chain=prerouting comment="MUTE - P2P filesharing " \
+    layer7-protocol=mute new-packet-mark=mute_p2p_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=mute new-packet-mark=mute_p2p_out
+add action=mark-packet chain=prerouting comment="Napster - P2P filesharing" \
+    layer7-protocol=napster new-packet-mark=napster_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=napster new-packet-mark=napster_out
+add action=mark-packet chain=prerouting comment=\
+    "NetBIOS - Network Basic Input Output System" layer7-protocol=netbios \
+    new-packet-mark=netbios_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=netbios new-packet-mark=netbios_out
+add action=mark-packet chain=prerouting comment=\
+    "NNTP - Network News Transfer Protocol " layer7-protocol=nntp \
+    new-packet-mark=nntp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=nntp new-packet-mark=nntp_out
+add action=mark-packet chain=prerouting comment=\
+    "SNTP - (Simple) Network Time Protocol " layer7-protocol=ntp \
+    new-packet-mark=ntp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=ntp new-packet-mark=ntp_out
+add action=mark-packet chain=prerouting comment=\
+    "Remote Administrator - remote desktop for MS Windows" layer7-protocol=\
+    radmin new-packet-mark=radmin_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=radmin new-packet-mark=radmin_out
+add action=mark-packet chain=prerouting comment=\
+    "Remote Desktop Protocol (used in Windows Terminal Services)" \
+    layer7-protocol=rdp new-packet-mark=rdp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=rdp new-packet-mark=rdp_out
+add action=mark-packet chain=prerouting comment=\
+    "RTSP - Real Time Streaming Protocol " layer7-protocol=rtsp \
+    new-packet-mark=rtsp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=rtsp new-packet-mark=rtsp_out
+add action=mark-packet chain=prerouting comment=\
+    "SIP - Session Initiation Protocol - Internet telephony " \
+    layer7-protocol=sip new-packet-mark=sip_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=sip new-packet-mark=sip_out
+add action=mark-packet chain=prerouting comment=\
+    "Skype to phone - UDP voice call " layer7-protocol=skypeout \
+    new-packet-mark=skypeout_in protocol=udp src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=skypeout new-packet-mark=skypeout_out protocol=udp
+add action=mark-packet chain=prerouting comment=\
+    "Skype to Skype - UDP voice call " layer7-protocol=skypetoskype \
+    new-packet-mark=skype2skype_in protocol=udp src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=skypetoskype new-packet-mark=skype2skype_out protocol=udp
+add action=mark-packet chain=prerouting comment=\
+    "POP3 - Post Office Protocol version 3" layer7-protocol=pop3 \
+    new-packet-mark=pop3_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=pop3 new-packet-mark=pop3_out
+add action=mark-packet chain=prerouting comment=\
+    "SMTP - Simple Mail Transfer Protocol " layer7-protocol=smtp \
+    new-packet-mark=smtp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=smtp new-packet-mark=smtp_out
+add action=mark-packet chain=prerouting comment=\
+    "SNMP - Simple Network Management Protocol " layer7-protocol=snmp \
+    new-packet-mark=snmp_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=snmp new-packet-mark=snmp_out
+add action=mark-packet chain=prerouting comment="Soulseek - P2P filesharing " \
+    layer7-protocol=soulseek new-packet-mark=soulsek_in src-address=\
+    10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=soulseek new-packet-mark=soulsek_out
+add action=mark-packet chain=prerouting comment="SSH - Secure SHell" \
+    layer7-protocol=ssh new-packet-mark=ssh_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=ssh new-packet-mark=ssh_out
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=streaming new-packet-mark=youtube_out protocol=tcp
+add action=mark-packet chain=prerouting comment=\
+    "SSL and TLS - Secure Socket Layer / Transport Layer Security " \
+    layer7-protocol=ssl new-packet-mark=ssl_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=ssl new-packet-mark=ssl_out
+add action=mark-packet chain=prerouting comment=vnc layer7-protocol=vnc \
+    new-packet-mark=vnc_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=vnc new-packet-mark=vnc_out
+add action=mark-packet chain=prerouting comment=\
+    "TeamSpeak - VoIP application " layer7-protocol=teamspeak \
+    new-packet-mark=teamspeak_in src-address=10.16.0.0/15
+add action=mark-packet chain=postrouting dst-address=10.16.0.0/15 \
+    layer7-protocol=teamspeak new-packet-mark=teamspeak_out
+add action=mark-packet chain=prerouting comment=\
+    "Everything else that remains" disabled=yes new-packet-mark=remaining_in \
+    passthrough=no src-address=10.16.0.0/15
+
+
+/ip route
+add distance=1 gateway=10.12.5.1
+/ip upnp
+set allow-disable-external-interface=no
+/snmp
+set trap-community=public
+/system clock
+set time-zone-name=Africa/Johannesburg
+/system identity
+set name=QOS_MTN
+/system ntp client
+set enabled=yes primary-ntp=10.12.0.2 secondary-ntp=146.64.24.58
+
+
+/system scheduler
+add interval=1d name="Enable Daytime" on-event=Set_Daytime_Limits policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive start-date=\
+    mar/09/2015 start-time=07:00:00
+add interval=1d name="Enable Nighttime" on-event=Set-Nighttime-limit policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive start-date=\
+    mar/09/2015 start-time=16:30:00
+add interval=1w name=Saturday on-event=Set-Nighttime-limit policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive start-date=\
+    mar/14/2015 start-time=07:05:00
+add interval=1w name=Sunday on-event=Set-Nighttime-limit policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive start-date=\
+    mar/15/2015 start-time=07:05:00
+
+
+/system script
+add name=Set_Daytime_Limits policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive source="/queue \
+    tree\r\
+    \nset 0 limit-at=9M max-limit=10M\r\
+    \nset 43 limit-at=80M max-limit=90M\r\
+    \n/ip firewall filter\r\
+    \nprint\r\
+    \nset 4 disabled=yes\r\
+    \nset 5 disabled=yes\r\
+    \nset 6 disabled=yes\r\
+    \nset 7 disabled=yes"
+add name=Set-Nighttime-limit policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive source="/queue \
+    tree\r\
+    \nset 0 limit-at=128K max-limit=256K\r\
+    \nset 43 limit-at=128K max-limit=256K\r\
+    \n/ip firewall filter\r\
+    \nprint\r\
+    \nset 4 disabled=no\r\
+    \nset 5 disabled=no\r\
+    \nset 6 disabled=no\r\
+    \nset 7 disabled=no"
+add name=test policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive source="/ip fir\
+    ewall filter\r\
+    \nprint\r\
+    \nset 4 disabled=yes\r\
+    \nset 5 disabled=yes\r\
+    \nset 6 disabled=yes\r\
+    \nset 7 disabled=yes"
+add name="test night" policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive source="/ip fir\
+    ewall filter\r\
+    \nprint\r\
+    \nset 4 disabled=no\r\
+    \nset 5 disabled=no\r\
+    \nset 6 disabled=no\r\
+    \nset 7 disabled=no"

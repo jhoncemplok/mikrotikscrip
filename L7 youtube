@@ -1,0 +1,93 @@
+/ip firewall layer7-protocol
+add name=video_stream regexp="r[0-9]+---[a-z]+-+[a-z0-9-]+\\.googlevideo\\.com"
+
+/ip firewall mangle
+    add \
+        action=mark-connection \
+        chain=prerouting \
+        disabled=no \
+        in-interface=ether1-lan \
+        new-connection-mark="all_conn" \
+        passthrough=yes
+    add \
+        action=mark-connection \
+        chain=prerouting \
+        disabled=no \
+        in-interface=ether1-lan \
+        layer7-protocol=video_stream \
+        new-connection-mark="video_conn" \
+        passthrough=yes
+    add \
+        action=mark-packet \
+        chain=prerouting \
+        connection-mark="video_conn" \
+        disabled=no \
+        new-packet-mark="video_packet" \
+        passthrough=no
+    add \
+        action=mark-packet \
+        chain=prerouting \
+        connection-mark="all_conn" \
+        disabled=no \
+        new-packet-mark="all_packet" \
+        passthrough=no
+
+
+/queue simple
+    add \
+        name="Browsing, DLL" \
+
+        comment="Membatasi streaming (ex: youtube) -" \
+        
+        burst-limit=0/0 \
+        burst-threshold=0/0 \
+        burst-time=0s/0s \
+        direction=both \
+        disabled=no \
+        interface=all \
+        limit-at=0/0 \
+        max-limit=1M/1M \
+        packet-marks="all_packet" \
+        parent=none \
+        priority=8 \
+        queue=default-small/default-small \
+
+        target-addresses=localIP \
+        
+        total-queue=default-small
+    add \
+        name="Video Streaming/Youtube" \
+        burst-limit=0/0 \
+        burst-threshold=0/0 \
+        burst-time=0s/0s \
+        direction=both \
+        disabled=no \
+        interface=all \
+        limit-at=0/0 \
+        max-limit=128k/128k \
+        packet-marks="video_packet" \
+        parent=none \
+        priority=8 \
+        queue=default-small/default-small \
+
+        target-addresses=localIP \
+        total-queue=default-small
+
+
+system scheduler BLOCK TIME
+    add \
+        name="Open Youtube" \
+        disabled=no \
+        interval=1d \
+        on-event="/queue simple set \"Video Streaming/Youtube\" max-limit=1m/1m" \
+        policy=ftp,reboot,read,write,policy,test,winbox,password,sniff,sensitive,api \
+        start-date=aug/19/2014 \
+        start-time=18:00:00
+    add \
+        name="Blok Youtube" \
+        disabled=no \
+        interval=1d \
+        on-event="/queue simple set \"Video Streaming/Youtube\" max-limit=1k/1k" \
+        policy=ftp,reboot,read,write,policy,test,winbox,password,sniff,sensitive,api \
+        start-date=aug/19/2014 \
+        start-time=09:00:00

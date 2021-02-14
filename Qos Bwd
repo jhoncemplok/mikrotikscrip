@@ -1,0 +1,77 @@
+#Cara Membagi Banwidth :
+1.Limit
+2.Groupling (sisa bandwidth)
+3.Burst
+4.Priority
+
+Indikator Qos
+1. Throughput badwidth
+2. latensi (pengaruh kualitas bandwidth)
+3. jitter (selisih dari latensi "litensi ping")
+4. Packet loss (exmp: tcp&udp)
+
+BURST
+3 parameter utama di gabugkan max limit
+1. burst limit (nilai selalu lebih tinggi dari max limit)
+2. burst threshold (nilai yang di pakai untuk membandingkan rata2 threshold yang nantinya akan 
+menentukan client boleh max-limit/burst limit)
+3. burst time (rentan waktu untuk menghitung rata-rata)
+
+bucket size (rasio terhadap max limit)
+ 
+
+
+
+fitur Qos
+1.simple queue
+2.queue tree (komlex) -->implementasi dari HTB
+parent (interface)
+
+Limit secara bertahap (stage limitation)
+CIR
+MIR ( sebesar max limit)
+
+
+
+#Queue Type
+pengaturan trafic:
+1. scheduler queue
+jika rate melebihi limit maka paket akan di antrikan ke waktu berikutnya
+2. shaper queue
+jika rate melebihi limit maka paket akan di drop
+
+tipe shaper
+htb (limit bandwidth yang kan lewat)
+pcq (membagi bandwidth dengan rata)
+
+type scheduler
+FIFO (membutuhkan resource paling kecil untuk trafic yang sama ) 
+if bufur melebihi packet maka akan di drop
+1. PFIFO (paket daata)  
+2. BFIFO (byte data) (melakukan antrian sesuai dengan besar data)
+3. MQ-PFIFO (support multi-core)
+RED (penggunaan untuk upto) -->packet tcp
+parameter :
+minimum treshold 
+if -(hitung rata" panjang queue) --> (<) minthreshold --> paket antri/di teruskan
+-   (hitung rata" panjang queue) --> (>) mintrheshold --> drop paket
+-	(hitung rata" panjang queue) --> (<>) min/maxthreshold --> kalkulasi kemungkinan drop 
+
+SFQ (mem-balance)
+membagi koneksi 1.24k subqueue
+menggunakan 4 classifier (source addr, source port, destination addr, destination port)
+purttabe -refres untuk hashing (5d)
+minus e gawe downloader
+jika koneksi terlalu banyak maka akan buffer
+
+PCQ
+bekerjja berdasarkan conection
+tidak ada jumlah subqueu
+di limit berdasarkan ram dan cpu
+-bisa gunakan queue type
+up (berdasarkan source add)
+down (berdasarkan destination)
+pcq-rate (limit badwidth max)
+pcq-limit (ukuran buffer untuk setiap subqueue)
+pcq-totallimit (limit x jumlah subsqueue)
+

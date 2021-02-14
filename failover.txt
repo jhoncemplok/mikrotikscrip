@@ -1,0 +1,19 @@
+#FAILOVER
+
+:if ([/ip route get [/ip route find comment="utama"] disabled]=yes) do={/ip route enable [/ip route find comment="utama"]} else={/ip route disable [/ip route find comment="utama"]}
+
+#BACK2MAIN
+
+:if ([/ip route get [/ip route find comment="utama"] disabled]=yes) do={/ip route enable [/ip route find comment="utama"]}
+
+#NETWATCH
+[Tab Host]
+- Host : 8.8.8.8
+- Interval : 00:00:03
+- Timeout : 1000 ms
+[Tab Down]
+On Down : failover (sesuaikan dengan nama script nya)
+
+#NB
+check-gateway = ping (utama)
+distance lebih besar (cadangan)
